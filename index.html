@@ -1342,42 +1342,29 @@
             .arch-svg-wrapper {
                 width: 100%;
                 max-width: 100%;
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-                scrollbar-width: thin;
-                scrollbar-color: var(--primary) transparent;
-            }
-            .arch-svg-wrapper::-webkit-scrollbar {
-                height: 4px;
-            }
-            .arch-svg-wrapper::-webkit-scrollbar-track {
-                background: transparent;
-            }
-            .arch-svg-wrapper::-webkit-scrollbar-thumb {
-                background-color: var(--primary);
-                border-radius: 99px;
+                overflow: visible;
             }
             .arch-svg-container {
-                min-width: 520px;
-                width: 520px;
-                height: auto;
-                margin: 0;
+                width: 100% !important;
+                min-width: 0 !important;
+                max-width: 100% !important;
+                height: auto !important;
                 display: block;
             }
             .swipe-hint {
-                display: flex !important;
+                display: none !important;
             }
             .arch-graph-card {
-                padding: 1.25rem 0.75rem;
+                padding: 1rem 0.75rem;
                 min-height: auto;
                 width: 100%;
                 max-width: 100%;
                 box-sizing: border-box;
+                overflow: visible;
             }
             .arch-container {
                 width: 100%;
                 max-width: 100%;
-                overflow: hidden;
             }
             .arch-detail-card {
                 min-width: 0;
