@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Prometheus Navigator - An interactive, modern guide to systems monitoring, alerting, installation, architecture, and time-series metrics.">
-    <title>Prometheus Navigator | Modern Monitoring Hub</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTUuMzMzIDExNCI+PHBhdGggZmlsbD0iI2U2NTIyYyIgZD0iTSA1Ni42NjcsMC42NjcgQyAyNS4zNzIsMC42NjcgMCwyNi4wMzYgMCw1Ny4zMzIgYyAwLDMxLjI5NSAyNS4zNzIsNTYuNjY2IDU2LjY2Nyw1Ni42NjYgMzEuMjk1LDAgNTYuNjY2LC0yNS4zNzEgNTYuNjY2LC01Ni42NjYgMCwtMzEuMjk2IC0yNS4zNzIsLTU2LjY2NSAtNTYuNjY2LC01Ni42NjUgeiBtIDAsMTA2LjA1NSBjIC04LjkwNCwwIC0xNi4xMjMsLTUuOTQ4IC0xNi4xMjMsLTEzLjI4MyBIIDcyLjc5IGMgMCw3LjMzNCAtNy4yMTksMTMuMjgzIC0xNi4xMjMsMTMuMjgzIHogTSA4My4yOTcsODkuMDQgSCAzMC4wMzQgViA3OS4zODIgSCA4My4yOTggViA4OS4wNCBaIE0gODMuMTA2LDc0LjQxMSBIIDMwLjE4NiBDIDMwLjAxLDc0LjIwOCAyOS44Myw3NC4wMDggMjkuNjYsNzMuODAyIDI0LjIwOCw2Ny4xODIgMjIuOTI0LDYzLjcyNiAyMS42NzcsNjAuMjA0IGMgLTAuMDIxLC0wLjExNiA2LjYxMSwxLjM1NSAxMS4zMTQsMi40MTMgMCwwIDIuNDIsMC41NiA1Ljk1OCwxLjIwNSAtMy4zOTcsLTMuOTgyIC01LjQxNCwtOS4wNDQgLTUuNDE0LC0xNC4yMTggMCwtMTEuMzU5IDguNzEyLC0yMS4yODUgNS41NjksLTI5LjMwOCAzLjA1OSwwLjI0OSA2LjMzMSw2LjQ1NiA2LjU1MiwxNi4xNjEgMy4yNTIsLTQuNDk0IDQuNjEzLC0xMi43MDEgNC42MTMsLTE3LjczMyAwLC01LjIxIDMuNDMzLC0xMS4yNjIgNi44NjcsLTExLjQ2OSAtMy4wNjEsNS4wNDUgMC43OTMsOS4zNyA0LjIxOSwyMC4wOTkgMS4yODUsNC4wMyAxLjEyMSwxMC44MTIgMi4xMTMsMTUuMTEzIEMgNjMuNzk3LDMzLjUzNCA2NS4zMzMsMjAuNSA3MSwxNiBjIC0yLjUsNS42NjcgMC4zNywxMi43NTggMi4zMzMsMTYuMTY3IDMuMTY3LDUuNSA1LjA4Nyw5LjY2NyA1LjA4NywxNy41NDggMCw1LjI4NCAtMS45NTEsMTAuMjU5IC01LjI0MiwxNC4xNDggMy43NDIsLTAuNzAyIDYuMzI2LC0xLjMzNSA2LjMyNiwtMS4zMzUgbCAxMi4xNTIsLTIuMzcxIGMgMTBlLTQsLTEwZS00IC0xLjc2NSw3LjI2MSAtOC41NSwxNC4yNTQgeiIvPjwvc3ZnPg==">
+    <title>Prometheus Navigator</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -478,6 +479,8 @@
             width: 100%;
             max-width: 650px;
             height: auto;
+            display: block;
+            margin: 0 auto;
         }
 
         /* SVG Architecture styles */
@@ -782,12 +785,15 @@
         }
 
         .metric-type-code {
+            font-family: var(--font-code);
             background-color: var(--code-bg);
             border: 1px solid var(--code-border);
             padding: 0.6rem;
             border-radius: 6px;
             font-size: 0.75rem;
             color: var(--code-string);
+            word-break: break-all;
+            white-space: pre-wrap;
         }
 
         /* Interactive Simulator Playground */
@@ -892,8 +898,38 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
             overflow-y: auto;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
             position: relative;
             line-height: 1.6;
+        }
+
+        .exporter-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .chart-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .arch-svg-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
 
         .flash-line {
@@ -1137,11 +1173,46 @@
         }
 
         @media (max-width: 768px) {
-            .navbar {
-                position: relative;
+            .container {
+                padding: 0 1rem;
+            }
+            .logo {
+                font-size: 1rem;
+                gap: 0.5rem;
+            }
+            .logo svg {
+                width: 24px;
+                height: 24px;
+            }
+            .nav-actions {
+                gap: 0.5rem;
             }
             .mobile-menu-btn {
-                display: block;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background: none;
+                border: 1px solid var(--border-color);
+                color: var(--text-primary);
+                padding: 0.5rem;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+            .mobile-menu-btn:hover {
+                background-color: var(--bg-tertiary);
+                color: var(--primary);
+                border-color: var(--primary);
+            }
+            .mobile-menu-btn svg, .theme-toggle svg {
+                width: 20px;
+                height: 20px;
+            }
+            .section {
+                padding: 4rem 0;
+            }
+            .navbar {
+                position: relative;
             }
             .nav-menu {
                 position: absolute;
@@ -1154,10 +1225,16 @@
                 padding: 2rem;
                 gap: 1.5rem;
                 display: none;
+                z-index: 1001;
+                backdrop-filter: var(--backdrop-blur);
+                -webkit-backdrop-filter: var(--backdrop-blur);
             }
             .nav-menu.active {
                 display: flex;
                 animation: fadeIn 0.3s ease;
+            }
+            .hero {
+                padding: 120px 0 60px;
             }
             .hero-grid {
                 grid-template-columns: 1fr;
@@ -1170,13 +1247,129 @@
             }
             .hero-buttons {
                 justify-content: center;
+                flex-wrap: wrap;
+                gap: 0.75rem;
             }
             .hero-title {
-                font-size: 2.8rem;
+                font-size: 2.2rem;
+            }
+            .card {
+                padding: 1.25rem;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .metric-type-title {
+                font-size: 1.1rem;
+            }
+            .metric-type-desc {
+                font-size: 0.8rem;
+                margin-bottom: 1rem;
+            }
+            .metric-type-code {
+                font-size: 0.7rem;
+                padding: 0.5rem;
+            }
+            .arch-detail-title {
+                font-size: 1.25rem;
+            }
+            .arch-detail-text {
+                font-size: 0.85rem;
+            }
+            .arch-detail-code pre {
+                font-size: 0.75rem;
+            }
+            .terminal-line {
+                font-size: 0.75rem;
+            }
+            .terminal-body {
+                padding: 1rem;
+            }
+            .exporter-terminal {
+                font-size: 0.75rem;
+                padding: 1rem;
+            }
+            .arch-svg-container {
+                min-width: 600px;
+                margin: 0;
+            }
+            .swipe-hint {
+                display: flex !important;
+            }
+            .arch-detail-card {
+                min-width: 0;
+            }
+            .install-tabs {
+                justify-content: flex-start;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 0.5rem;
+                gap: 0.5rem;
+            }
+            .tab-btn {
+                padding: 0.75rem 1.25rem;
+                flex-shrink: 0;
+            }
+            .terminal-console {
+                min-width: 0;
+                max-width: 100%;
+            }
+            .terminal-line {
+                flex-wrap: wrap;
+                word-break: break-all;
+            }
+            .control-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .sim-btn {
+                width: 100%;
+                justify-content: center;
+                font-size: 0.8rem;
+                padding: 0.5rem 1rem;
+            }
+            .exporter-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .chart-card {
+                padding: 1.25rem 1rem;
+            }
+            .chart-card-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            .chart-header-row {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 1.5rem;
+            }
+            .chart-controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            .query-select {
+                width: 100%;
+                text-align: center;
             }
             .footer-grid {
                 grid-template-columns: 1fr;
                 gap: 2.5rem;
+                text-align: center;
+            }
+            .footer-logo {
+                justify-content: center;
+            }
+            .footer-desc {
+                margin: 0 auto;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
             }
         }
     </style>
@@ -1264,76 +1457,82 @@
             <div class="arch-container">
                 <!-- SVG Architecture Flow Diagram -->
                 <div class="card arch-graph-card">
-                    <svg viewBox="0 0 600 400" class="arch-svg-container" id="architecture-svg">
-                        <!-- Definitions for arrows -->
-                        <defs>
-                            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-                                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--primary)" />
-                            </marker>
-                            <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
-                                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-muted)" />
-                            </marker>
-                        </defs>
+                    <div class="arch-svg-wrapper">
+                        <svg viewBox="0 0 600 400" class="arch-svg-container" id="architecture-svg">
+                            <!-- Definitions for arrows -->
+                            <defs>
+                                <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--primary)" />
+                                </marker>
+                                <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-muted)" />
+                                </marker>
+                            </defs>
 
-                        <!-- Connecting Streams -->
-                        <!-- Exporters to Server -->
-                        <path d="M 160,110 L 300,165" class="arch-link" id="link-exporters" />
-                        <path d="M 160,110 L 300,165" class="arch-link-flow" id="flow-exporters" style="display:none;" />
-                        
-                        <!-- Pushgateway to Server -->
-                        <path d="M 160,250 L 300,215" class="arch-link" id="link-pushgateway" />
-                        <path d="M 160,250 L 300,215" class="arch-link-flow" id="flow-pushgateway" style="display:none;" />
+                            <!-- Connecting Streams -->
+                            <!-- Exporters to Server -->
+                            <path d="M 160,110 L 300,165" class="arch-link" id="link-exporters" />
+                            <path d="M 160,110 L 300,165" class="arch-link-flow" id="flow-exporters" style="display:none;" />
+                            
+                            <!-- Pushgateway to Server -->
+                            <path d="M 160,250 L 300,215" class="arch-link" id="link-pushgateway" />
+                            <path d="M 160,250 L 300,215" class="arch-link-flow" id="flow-pushgateway" style="display:none;" />
 
-                        <!-- Server to Alertmanager -->
-                        <path d="M 400,190 L 510,120" class="arch-link" id="link-alertmanager" />
-                        <path d="M 400,190 L 510,120" class="arch-link-flow" id="flow-alertmanager" style="display:none;" />
+                            <!-- Server to Alertmanager -->
+                            <path d="M 400,190 L 510,120" class="arch-link" id="link-alertmanager" />
+                            <path d="M 400,190 L 510,120" class="arch-link-flow" id="flow-alertmanager" style="display:none;" />
 
-                        <!-- Server to Grafana -->
-                        <path d="M 400,190 L 510,280" class="arch-link" id="link-visualization" />
-                        <path d="M 400,190 L 510,280" class="arch-link-flow" id="flow-visualization" style="display:none;" />
+                            <!-- Server to Grafana -->
+                            <path d="M 400,190 L 510,280" class="arch-link" id="link-visualization" />
+                            <path d="M 400,190 L 510,280" class="arch-link-flow" id="flow-visualization" style="display:none;" />
 
-                        <!-- NODE 1: Jobs & Exporters -->
-                        <g class="arch-node active" id="node-exporters" onclick="selectArchNode('exporters')">
-                            <rect x="30" y="60" width="130" height="85" rx="10" />
-                            <text x="95" y="85" text-anchor="middle" class="arch-node-title">Jobs / Exporters</text>
-                            <text x="95" y="105" text-anchor="middle" class="arch-node-desc">Pull Target: Node Exporter</text>
-                            <text x="95" y="120" text-anchor="middle" class="arch-node-desc">App Custom Metrics</text>
-                        </g>
+                            <!-- NODE 1: Jobs & Exporters -->
+                            <g class="arch-node active" id="node-exporters" onclick="selectArchNode('exporters')">
+                                <rect x="30" y="60" width="130" height="85" rx="10" />
+                                <text x="95" y="85" text-anchor="middle" class="arch-node-title">Jobs / Exporters</text>
+                                <text x="95" y="105" text-anchor="middle" class="arch-node-desc">Pull Target: Node Exporter</text>
+                                <text x="95" y="120" text-anchor="middle" class="arch-node-desc">App Custom Metrics</text>
+                            </g>
 
-                        <!-- NODE 2: Pushgateway -->
-                        <g class="arch-node" id="node-pushgateway" onclick="selectArchNode('pushgateway')">
-                            <rect x="30" y="210" width="130" height="85" rx="10" />
-                            <text x="95" y="235" text-anchor="middle" class="arch-node-title">Pushgateway</text>
-                            <text x="95" y="255" text-anchor="middle" class="arch-node-desc">For Short-Lived Jobs</text>
-                            <text x="95" y="270" text-anchor="middle" class="arch-node-desc">Ephemeral Metrics Store</text>
-                        </g>
+                            <!-- NODE 2: Pushgateway -->
+                            <g class="arch-node" id="node-pushgateway" onclick="selectArchNode('pushgateway')">
+                                <rect x="30" y="210" width="130" height="85" rx="10" />
+                                <text x="95" y="235" text-anchor="middle" class="arch-node-title">Pushgateway</text>
+                                <text x="95" y="255" text-anchor="middle" class="arch-node-desc">For Short-Lived Jobs</text>
+                                <text x="95" y="270" text-anchor="middle" class="arch-node-desc">Ephemeral Metrics Store</text>
+                            </g>
 
-                        <!-- NODE 3: Prometheus Server -->
-                        <g class="arch-node" id="node-server" onclick="selectArchNode('server')">
-                            <rect x="260" y="125" width="150" height="120" rx="15" />
-                            <!-- Mini logo inside server -->
-                            <circle cx="335" cy="165" r="16" fill="var(--primary-light)" stroke="var(--primary)" stroke-width="1" />
-                            <path d="M 335,153 C 327,153 322,158 322,165 c 0,7 5,13 13,13 c 8,0 13,-6 13,-13 z" fill="var(--primary)" transform="scale(0.55) translate(272, 117)" />
-                            <text x="335" y="200" text-anchor="middle" class="arch-node-title">Prometheus Server</text>
-                            <text x="335" y="215" text-anchor="middle" class="arch-node-desc">Retrieval, TSDB, & HTTP API</text>
-                        </g>
+                            <!-- NODE 3: Prometheus Server -->
+                            <g class="arch-node" id="node-server" onclick="selectArchNode('server')">
+                                <rect x="260" y="125" width="150" height="120" rx="15" />
+                                <!-- Mini logo inside server -->
+                                <circle cx="335" cy="165" r="16" fill="var(--primary-light)" stroke="var(--primary)" stroke-width="1" />
+                                <path d="M 335,153 C 327,153 322,158 322,165 c 0,7 5,13 13,13 c 8,0 13,-6 13,-13 z" fill="var(--primary)" transform="scale(0.55) translate(272, 117)" />
+                                <text x="335" y="200" text-anchor="middle" class="arch-node-title">Prometheus Server</text>
+                                <text x="335" y="215" text-anchor="middle" class="arch-node-desc">Retrieval, TSDB, & HTTP API</text>
+                            </g>
 
-                        <!-- NODE 4: Alertmanager -->
-                        <g class="arch-node" id="node-alertmanager" onclick="selectArchNode('alertmanager')">
-                            <rect x="470" y="70" width="110" height="80" rx="10" />
-                            <text x="525" y="95" text-anchor="middle" class="arch-node-title">Alertmanager</text>
-                            <text x="525" y="115" text-anchor="middle" class="arch-node-desc">Deduplicate & Route</text>
-                            <text x="525" y="130" text-anchor="middle" class="arch-node-desc">Email, Slack, PagerDuty</text>
-                        </g>
+                            <!-- NODE 4: Alertmanager -->
+                            <g class="arch-node" id="node-alertmanager" onclick="selectArchNode('alertmanager')">
+                                <rect x="470" y="70" width="110" height="80" rx="10" />
+                                <text x="525" y="95" text-anchor="middle" class="arch-node-title">Alertmanager</text>
+                                <text x="525" y="115" text-anchor="middle" class="arch-node-desc">Deduplicate & Route</text>
+                                <text x="525" y="130" text-anchor="middle" class="arch-node-desc">Email, Slack, PagerDuty</text>
+                            </g>
 
-                        <!-- NODE 5: Grafana & Visualization -->
-                        <g class="arch-node" id="node-visualization" onclick="selectArchNode('visualization')">
-                            <rect x="470" y="240" width="110" height="80" rx="10" />
-                            <text x="525" y="265" text-anchor="middle" class="arch-node-title">Visualization</text>
-                            <text x="525" y="285" text-anchor="middle" class="arch-node-desc">Grafana Dashboards</text>
-                            <text x="525" y="300" text-anchor="middle" class="arch-node-desc">Prometheus Web UI</text>
-                        </g>
-                    </svg>
+                            <!-- NODE 5: Grafana & Visualization -->
+                            <g class="arch-node" id="node-visualization" onclick="selectArchNode('visualization')">
+                                <rect x="470" y="240" width="110" height="80" rx="10" />
+                                <text x="525" y="265" text-anchor="middle" class="arch-node-title">Visualization</text>
+                                <text x="525" y="285" text-anchor="middle" class="arch-node-desc">Grafana Dashboards</text>
+                                <text x="525" y="300" text-anchor="middle" class="arch-node-desc">Prometheus Web UI</text>
+                            </g>
+                        </svg>
+                    </div>
+                    <div class="swipe-hint" style="display: none; text-align: center; color: var(--text-muted); font-size: 0.8rem; margin-top: 1rem; align-items: center; justify-content: center; gap: 0.5rem; width: 100%;">
+                        <i data-lucide="arrow-left-right" style="width: 14px; height: 14px; color: var(--primary);"></i>
+                        Swipe horizontally to view full diagram
+                    </div>
                 </div>
 
                 <!-- Detail Panel -->
@@ -1714,7 +1913,7 @@ node_cpu_seconds_total{cpu="0",mode="idle"} 439023.11</pre>
 
                 <!-- Live Exporter Code Output -->
                 <div class="metrics-exporter-card card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div class="exporter-card-header">
                         <h4 style="font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
                             <i data-lucide="server" style="color: var(--primary);"></i>
                             Exporter Endpoint: <code style="color: var(--primary);">/metrics</code>
@@ -1756,7 +1955,7 @@ node_cpu_seconds_total{cpu="0",mode="idle"} 439023.11</pre>
 
             <!-- Chart panel -->
             <div class="chart-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-family: var(--font-code); font-size: 0.85rem; color: var(--text-secondary);">
+                <div class="chart-card-header">
                     <div>Element: <span id="chart-query-display" style="color: var(--primary); font-weight: 600;">http_requests_total</span></div>
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <span style="display:inline-block; width: 8px; height: 8px; border-radius:50%; background-color: var(--success); animation: pulse-glow 2s infinite;"></span>
@@ -1830,7 +2029,6 @@ node_cpu_seconds_total{cpu="0",mode="idle"} 439023.11</pre>
 
             <div class="footer-bottom">
                 <p>&copy; 2026 Prometheus Navigator. Built for Educational Guidance.</p>
-                <p>Released under the Apache 2.0 License.</p>
             </div>
         </div>
     </footer>
