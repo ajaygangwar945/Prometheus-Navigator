@@ -1,0 +1,189 @@
+PROJECT: Prometheus Navigator
+==============================
+An interactive, single-page educational web app for learning Prometheus monitoring.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOW I BUILT THIS PROJECT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+OVERVIEW
+--------
+I built this project using Antigravity AI (a powerful AI coding assistant by
+Google DeepMind) as my pair programming partner. The entire project lives in a
+single self-contained HTML file (index.html) with no external dependencies or
+build tools — just vanilla HTML, CSS, and JavaScript.
+
+TECH STACK
+----------
+- HTML5          : Semantic page structure
+- Vanilla CSS    : Custom properties (CSS variables), glassmorphism, dark/light
+                   theming, responsive grid layouts, keyframe animations
+- Vanilla JS     : DOM manipulation, SVG interactivity, clipboard API,
+                   real-time metric simulation, live SVG charting engine
+- Google Fonts   : Inter, Outfit, JetBrains Mono (loaded via CDN)
+- Lucide Icons   : Icon library (loaded via CDN unpkg)
+- nginx:alpine   : Docker base image for serving the static file
+- GitHub Actions : CI/CD pipeline to build and push Docker image to Docker Hub
+
+NO FRAMEWORKS. NO BUILD STEP. NO NODE_MODULES.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+STEP-BY-STEP BUILD PROCESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+STEP 1 — Design System & CSS Foundation
+  - Defined CSS custom properties (variables) for dark and light themes
+  - Set up color palette: Prometheus orange (#e6522c) as primary brand color
+  - Configured typography tokens: --font-headings, --font-body, --font-code
+  - Built glassmorphism card styles with backdrop-filter blur
+  - Created animation keyframes: pulse-glow, float-art, dash, fadeIn
+
+STEP 2 — Official Prometheus Logo (SVG)
+  - Embedded the official Prometheus SVG logo path directly in HTML
+  - Used as the navbar logo with a 360° spin on hover
+  - Used as the hero section large floating logo
+  - Encoded as a base64 data URI for the browser tab favicon
+  - Fixed corrupted base64 encoding using a Python helper script
+
+STEP 3 — Navigation Bar
+  - Fixed top navbar with glassmorphism background (backdrop-filter)
+  - Logo + site title on the left
+  - Nav links (Working & Architecture, Installation, Metrics, Live Playground)
+  - Dark/light theme toggle button using CSS data attributes
+  - Hamburger menu for mobile with a slide-in dropdown
+
+STEP 4 — Hero Section
+  - Large headline with gradient text (PromQL in orange-to-accent gradient)
+  - Descriptive subtitle paragraph
+  - Two CTA buttons: "Start Installing" and "Simulate Metrics"
+  - Floating Prometheus logo art with radial glow and float animation
+  - Grid background pattern using CSS mask-image
+
+STEP 5 — Interactive Architecture Diagram (How Prometheus Works)
+  - Custom SVG flowchart drawn entirely with SVG elements (no library)
+  - Five clickable nodes: Jobs/Exporters, Pushgateway, Prometheus Server,
+    Alertmanager, Visualization/Grafana
+  - Animated dashed lines connecting nodes (stroke-dashoffset animation)
+  - Clicking a node highlights it (orange border + glow) and shows a detail
+    panel on the right with description, badge, and sample metrics schema
+  - JavaScript selectArchNode() function handles all interactivity
+
+STEP 6 — OS Installation Hub
+  - Tab-based interface: Linux/Unix, macOS (Homebrew), Windows, Docker
+  - Each tab has numbered step cards explaining the installation process
+  - Terminal console component styled as a real developer shell
+    (bash $ prompt, comments in italic, syntax-colored output)
+  - One-click "Copy" button using the Clipboard API
+  - Tab switching with CSS animations (fadeIn)
+
+STEP 7 — Metrics Explorer
+  - Four metric type cards: Counter, Gauge, Histogram, Summary
+  - Each card shows: icon, title, description, sample exposition snippet
+  - Code snippets styled with monospace font and syntax-like colors
+
+STEP 8 — Interactive Metrics Simulator
+  - Two-column layout: Control Deck (left) + Live /metrics Output (right)
+  - Control Deck has three simulation cards:
+      • HTTP Requests  → increments a counter on button click
+      • Memory Usage   → adjusts a gauge bar with animated width transition
+      • Request Latency → simulates histogram bucket updates
+  - Right panel shows a live plaintext /metrics exposition output
+  - Changed lines flash yellow (CSS animation) to highlight updates
+  - JavaScript interval continuously updates counter values
+
+STEP 9 — PromQL Chart & Live Playground
+  - Dropdown selector to switch between different PromQL queries
+  - SVG-based time-series charting engine written from scratch:
+      • Bezier smooth line path
+      • Gradient area fill under the line
+      • Animated grid lines and axis labels
+      • Dot markers on each data point
+      • Mouse hover tooltip following cursor coordinates
+  - Real-time data stream: new data points added every 2 seconds
+  - Chart redraws when query is changed
+
+STEP 10 — Footer
+  - Three-column grid: brand + description, quick links, resources
+  - Social / project links
+  - Copyright line
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RESPONSIVE DESIGN (MOBILE & TABLET)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Three CSS breakpoints:
+
+  1024px  - Stack architecture grid to single column
+            Stack install grid to single column
+            Stack simulator to single column
+
+  768px   - Show hamburger menu, hide desktop nav links
+            Hide hero art to save vertical space
+            Hero title shrinks to 2rem
+            Metrics grid becomes 2 columns
+            Architecture SVG scales to 100% width (responsive via viewBox)
+            Install tabs scroll horizontally (hidden scrollbar)
+            Terminal font size reduced
+            Footer stacks to single column
+
+  480px   - Hide logo text (show only icon)
+            Hero title shrinks to 1.65rem
+            Buttons go full width and stack vertically
+            Metrics grid becomes single column
+            All font sizes reduced further
+            Chart height reduced to 220px
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+DOCKER & CI/CD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Dockerfile
+  - Base image: nginx:alpine (smallest footprint)
+  - Copies index.html into /usr/share/nginx/html/
+  - Exposes port 80
+  - CMD: nginx -g "daemon off;"
+
+.dockerignore
+  - Excludes: .git, .github, serve.py, markdown files, yaml files, IDE folders
+
+GitHub Actions (.github/workflows/docker.yaml)
+  - Trigger: push to main branch
+  - Steps: checkout → login to Docker Hub → docker build → docker push
+  - Secrets used: DOCKER_USERNAME, DOCKER_PASSWORD
+
+Run locally:
+  docker build -t prometheus-navigator .
+  docker run -p 8080:80 prometheus-navigator
+  Open http://localhost:8080
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FILE STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Prometheus-Navigator/
+├── index.html                        ← Entire app (HTML + CSS + JS)
+├── Dockerfile                        ← nginx:alpine Docker image
+├── nginx.conf                        ← nginx server configuration
+├── .dockerignore                     ← Docker build exclusions
+├── .gitignore                        ← Git exclusions
+├── serve.py                          ← Local dev server (no-cache)
+└── .github/
+    └── workflows/
+        └── docker.yaml               ← GitHub Actions CI/CD
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOOLS & AI ASSISTANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+This project was built with AI pair programming using:
+  Antigravity AI — by Google DeepMind Advanced Agentic Coding team
+
+The AI assisted with:
+  - Designing and writing all HTML structure
+  - Writing all CSS (design tokens, animations, responsive breakpoints)
+  - Writing all JavaScript (chart engine, simulator, clipboard, theming)
+  - Embedding and fixing the official Prometheus SVG logo + favicon
+  - Creating Docker, nginx, GitHub Actions configuration
+  - Iteratively fixing mobile responsiveness issues across 3 breakpoints
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
