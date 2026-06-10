@@ -1,0 +1,2302 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Prometheus Navigator - An interactive, modern guide to systems monitoring, alerting, installation, architecture, and time-series metrics.">
+    <title>Prometheus Navigator | Modern Monitoring Hub</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            /* Theme Variables - Dark Mode (Default) */
+            --bg-primary: #0a0d14;
+            --bg-secondary: #10141f;
+            --bg-tertiary: #171c2a;
+            --card-bg: rgba(16, 20, 31, 0.7);
+            --card-hover-bg: rgba(23, 28, 42, 0.85);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --text-muted: #6b7280;
+            
+            --primary: #e6522c;      /* Prometheus Official Orange */
+            --primary-hover: #ff6a42;
+            --primary-light: rgba(230, 82, 44, 0.15);
+            --primary-glow: rgba(230, 82, 44, 0.35);
+            
+            --accent: #ff8e6e;
+            --success: #10b981;
+            --success-light: rgba(16, 185, 129, 0.15);
+            --warning: #f59e0b;
+            --info: #3b82f6;
+            --danger: #ef4444;
+            
+            --code-bg: #0b0d13;
+            --code-border: rgba(255, 255, 255, 0.08);
+            --code-text: #e1e4e8;
+            --code-keyword: #ff7b72;
+            --code-string: #a5d6ff;
+            --code-comment: #8b949e;
+            --code-number: #79c0ff;
+            
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.4);
+            --shadow-glow: 0 0 30px rgba(230, 82, 44, 0.2);
+            
+            --backdrop-blur: blur(12px);
+            --font-headings: 'Outfit', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --font-code: 'JetBrains Mono', monospace;
+            
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="light"] {
+            /* Theme Variables - Light Mode */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-hover-bg: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(0, 0, 0, 0.08);
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+            
+            --primary-light: rgba(230, 82, 44, 0.08);
+            --primary-glow: rgba(230, 82, 44, 0.15);
+            
+            --code-bg: #f8fafc;
+            --code-border: rgba(0, 0, 0, 0.06);
+            --code-text: #1e293b;
+            --code-keyword: #0550ae;
+            --code-string: #0a3069;
+            --code-comment: #6a737d;
+            --code-number: #cf222e;
+            
+            --shadow-md: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 10px 10px -5px rgba(0, 0, 0, 0.03);
+            --shadow-glow: 0 0 25px rgba(230, 82, 44, 0.1);
+        }
+
+        /* Base Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-headings);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        code, pre {
+            font-family: var(--font-code);
+        }
+
+        /* Utilities */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-orange {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(230, 82, 44, 0.25);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-family: var(--font-headings);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-size: 0.95rem;
+            border: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-tertiary);
+            transform: translateY(-2px);
+        }
+
+        /* Header / Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background-color: var(--card-bg);
+            backdrop-filter: var(--backdrop-blur);
+            -webkit-backdrop-filter: var(--backdrop-blur);
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color var(--transition-speed), border var(--transition-speed);
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: var(--font-headings);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .logo svg {
+            width: 32px;
+            height: 32px;
+            filter: drop-shadow(0 0 6px var(--primary-glow));
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .logo:hover svg {
+            transform: rotate(360deg);
+        }
+
+        .logo-text-sub {
+            font-weight: 300;
+            color: var(--text-secondary);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+            position: relative;
+            padding: 0.25rem 0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.2s ease-in-out;
+        }
+
+        .nav-link:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .theme-toggle .icon-sun {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle .icon-moon {
+            display: none;
+        }
+
+        [data-theme="light"] .theme-toggle .icon-sun {
+            display: block;
+        }
+
+        /* Mobile Nav Toggle */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            padding: 180px 0 100px;
+            overflow: hidden;
+            background-image: 
+                radial-gradient(circle at 80% 20%, var(--primary-light) 0%, transparent 40%),
+                radial-gradient(circle at 10% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: linear-gradient(var(--border-color) 1px, transparent 1px), linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+            background-size: 60px 60px;
+            mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+            -webkit-mask-image: radial-gradient(circle at 50% 50%, black, transparent 80%);
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-desc {
+            font-size: 1.15rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .hero-art {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-art-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            border-radius: 50%;
+            filter: blur(20px);
+            z-index: 1;
+            animation: pulse-glow 6s infinite ease-in-out;
+        }
+
+        .hero-art-main {
+            position: relative;
+            z-index: 2;
+            width: 260px;
+            height: 260px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-lg);
+            backdrop-filter: var(--backdrop-blur);
+        }
+
+        .hero-art-main svg {
+            width: 140px;
+            height: 140px;
+            filter: drop-shadow(0 0 12px var(--primary-glow));
+            animation: float-art 4s infinite ease-in-out;
+        }
+
+        /* Section Layouts */
+        .section {
+            padding: 100px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-top: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-desc {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+        }
+
+        /* Cards & Grids */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card:hover {
+            background-color: var(--card-hover-bg);
+            border-color: rgba(230, 82, 44, 0.25);
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Architecture Section */
+        .arch-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 3rem;
+            align-items: stretch;
+        }
+
+        .arch-graph-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            min-height: 400px;
+            padding: 3rem 1.5rem;
+        }
+
+        .arch-svg-container {
+            width: 100%;
+            max-width: 650px;
+            height: auto;
+        }
+
+        /* SVG Architecture styles */
+        .arch-node {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .arch-node rect, .arch-node circle {
+            fill: var(--bg-tertiary);
+            stroke: var(--border-color);
+            stroke-width: 1.5;
+            transition: all 0.3s ease;
+        }
+
+        .arch-node text {
+            fill: var(--text-primary);
+            font-family: var(--font-headings);
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .arch-node-desc {
+            font-size: 9px !important;
+            fill: var(--text-secondary) !important;
+            font-weight: 400 !important;
+        }
+
+        /* Interactive active nodes */
+        .arch-node.active rect, .arch-node.active circle {
+            fill: var(--primary-light);
+            stroke: var(--primary);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 4px var(--primary-glow));
+        }
+
+        .arch-node:hover rect, .arch-node:hover circle {
+            stroke: var(--primary);
+            stroke-width: 2;
+        }
+
+        .arch-link {
+            stroke: var(--border-color);
+            stroke-width: 1.5;
+            stroke-dasharray: 4 4;
+            animation: dash 15s linear infinite;
+        }
+
+        .arch-link-flow {
+            stroke: var(--primary);
+            stroke-width: 2;
+            stroke-dasharray: 5 5;
+            animation: dash-flow 10s linear infinite;
+            opacity: 0.8;
+        }
+
+        .arch-detail-card {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .arch-detail-body {
+            flex-grow: 1;
+            margin-top: 1.5rem;
+        }
+
+        .arch-detail-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .arch-detail-text {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .arch-detail-badge {
+            margin-bottom: 1rem;
+        }
+
+        .arch-detail-code {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+        }
+
+        .arch-detail-code pre {
+            font-size: 0.8rem;
+            color: var(--code-text);
+            margin: 0;
+        }
+
+        /* Installation Tabs Section */
+        .install-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            font-family: var(--font-headings);
+            font-size: 1.05rem;
+            font-weight: 600;
+            padding: 1rem 2rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .install-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 2.5rem;
+        }
+
+        .install-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step-item {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .step-num {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid rgba(230, 82, 44, 0.2);
+            border-radius: 50%;
+            font-weight: 700;
+            font-family: var(--font-headings);
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .step-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Terminal Console component */
+        .terminal-console {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .terminal-header {
+            background-color: rgba(0, 0, 0, 0.15);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--code-border);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot-red { background-color: #ef4444; }
+        .terminal-dot-yellow { background-color: #f59e0b; }
+        .terminal-dot-green { background-color: #10b981; }
+
+        .terminal-title {
+            font-family: var(--font-code);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .terminal-body {
+            padding: 1.5rem;
+            overflow-x: auto;
+            flex-grow: 1;
+        }
+
+        .terminal-line {
+            display: flex;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: var(--code-text);
+        }
+
+        .terminal-prompt {
+            color: var(--primary);
+            margin-right: 0.75rem;
+            user-select: none;
+        }
+
+        .terminal-comment {
+            color: var(--code-comment);
+            font-style: italic;
+        }
+
+        .terminal-copy-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+            font-family: var(--font-headings);
+            font-weight: 500;
+        }
+
+        .terminal-copy-btn:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 4rem;
+        }
+
+        .metric-type-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-type-icon {
+            color: var(--primary);
+            margin-bottom: 1.25rem;
+        }
+
+        .metric-type-title {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .metric-type-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .metric-type-code {
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--code-string);
+        }
+
+        /* Interactive Simulator Playground */
+        .simulator-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 3rem;
+        }
+
+        .control-deck {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+
+        .control-card-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .control-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .sim-btn {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .sim-btn:hover {
+            border-color: var(--primary);
+            background-color: var(--primary-light);
+            color: var(--text-primary);
+        }
+
+        .sim-gauge-container {
+            margin-top: 1rem;
+        }
+
+        .sim-gauge-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .sim-gauge-bar-outer {
+            height: 10px;
+            background-color: var(--bg-tertiary);
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .sim-gauge-bar-inner {
+            height: 100%;
+            width: 45%;
+            background-color: var(--primary);
+            border-radius: 999px;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 8px var(--primary-glow);
+        }
+
+        .metrics-exporter-card {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            min-height: 450px;
+        }
+
+        .exporter-terminal {
+            flex-grow: 1;
+            background-color: var(--code-bg);
+            border: 1px solid var(--code-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            font-family: var(--font-code);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            overflow-y: auto;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .flash-line {
+            animation: lineHighlight 0.8s ease;
+        }
+
+        /* PromQL Chart Section */
+        .chart-section {
+            margin-top: 5rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 5rem;
+        }
+
+        .chart-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .query-select {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: var(--font-code);
+            font-size: 0.85rem;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .query-select:focus {
+            border-color: var(--primary);
+        }
+
+        .chart-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            margin-top: 1rem;
+        }
+
+        .chart-svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .chart-grid-line {
+            stroke: var(--border-color);
+            stroke-width: 1;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke: var(--primary);
+            stroke-width: 2.5;
+            transition: d 0.5s ease;
+        }
+
+        .chart-area {
+            fill: url(#chart-gradient);
+            transition: d 0.5s ease;
+        }
+
+        .chart-dot {
+            fill: var(--primary);
+            stroke: var(--bg-secondary);
+            stroke-width: 2;
+            cursor: pointer;
+            transition: r 0.2s;
+        }
+
+        .chart-dot:hover {
+            r: 6px;
+        }
+
+        .chart-axis-text {
+            fill: var(--text-muted);
+            font-size: 10px;
+            font-family: var(--font-body);
+        }
+
+        .chart-tooltip {
+            position: absolute;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s, transform 0.1s;
+            z-index: 10;
+            box-shadow: var(--shadow-md);
+            font-family: var(--font-code);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--bg-secondary);
+            border-top: 1px solid var(--border-color);
+            padding: 4rem 0 2rem;
+            margin-top: 100px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr;
+            gap: 4rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-logo {
+            margin-bottom: 1rem;
+        }
+
+        .footer-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            max-width: 350px;
+        }
+
+        .footer-title {
+            font-size: 1.1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .footer-link {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Animations */
+        @keyframes pulse-glow {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.35;
+            }
+            50% {
+                transform: scale(1.15);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes float-art {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        @keyframes dash {
+            to {
+                stroke-dashoffset: -100;
+            }
+        }
+
+        @keyframes dash-flow {
+            to {
+                stroke-dashoffset: -80;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes lineHighlight {
+            0% {
+                background-color: rgba(230, 82, 44, 0.4);
+            }
+            100% {
+                background-color: transparent;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 3.2rem;
+            }
+            .arch-container {
+                grid-template-columns: 1fr;
+            }
+            .simulator-section {
+                grid-template-columns: 1fr;
+            }
+            .install-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                position: relative;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .nav-menu {
+                position: absolute;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-secondary);
+                border-bottom: 1px solid var(--border-color);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                display: none;
+            }
+            .nav-menu.active {
+                display: flex;
+                animation: fadeIn 0.3s ease;
+            }
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+                text-align: center;
+            }
+            .hero-desc {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .hero-title {
+                font-size: 2.8rem;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+                gap: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container navbar">
+            <a href="#" class="logo">
+                <!-- Embedded Official Prometheus SVG Logo -->
+                <svg viewBox="0 0 115.333 114" xmlns="http://www.w3.org/2000/svg">
+                    <path style="fill:#e6522c;" d="M 56.667,0.667 C 25.372,0.667 0,26.036 0,57.332 c 0,31.295 25.372,56.666 56.667,56.666 31.295,0 56.666,-25.371 56.666,-56.666 0,-31.296 -25.372,-56.665 -56.666,-56.665 z m 0,106.055 c -8.904,0 -16.123,-5.948 -16.123,-13.283 H 72.79 c 0,7.334 -7.219,13.283 -16.123,13.283 z M 83.297,89.04 H 30.034 V 79.382 H 83.298 V 89.04 Z M 83.106,74.411 H 30.186 C 30.01,74.208 29.83,74.008 29.66,73.802 24.208,67.182 22.924,63.726 21.677,60.204 c -0.021,-0.116 6.611,1.355 11.314,2.413 0,0 2.42,0.56 5.958,1.205 -3.397,-3.982 -5.414,-9.044 -5.414,-14.218 0,-11.359 8.712,-21.285 5.569,-29.308 3.059,0.249 6.331,6.456 6.552,16.161 3.252,-4.494 4.613,-12.701 4.613,-17.733 0,-5.21 3.433,-11.262 6.867,-11.469 -3.061,5.045 0.793,9.37 4.219,20.099 1.285,4.03 1.121,10.812 2.113,15.113 C 63.797,33.534 65.333,20.5 71,16 c -2.5,5.667 0.37,12.758 2.333,16.167 3.167,5.5 5.087,9.667 5.087,17.548 0,5.284 -1.951,10.259 -5.242,14.148 3.742,-0.702 6.326,-1.335 6.326,-1.335 l 12.152,-2.371 c 10e-4,-10e-4 -1.765,7.261 -8.55,14.254 z" />
+                </svg>
+                <span>PROMETHEUS<span class="logo-text-sub">NAVIGATOR</span></span>
+            </a>
+            
+            <nav>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#working" class="nav-link">Working & Architecture</a></li>
+                    <li><a href="#installation" class="nav-link">Installation</a></li>
+                    <li><a href="#metrics" class="nav-link">Metrics & Types</a></li>
+                    <li><a href="#playground" class="nav-link">Live Playground</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle Theme">
+                    <i data-lucide="moon" class="icon-moon"></i>
+                    <i data-lucide="sun" class="icon-sun"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-toggle" aria-label="Toggle Mobile Menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-grid">
+            <div class="hero-content">
+                <div class="badge badge-orange">
+                    <i data-lucide="activity" style="width: 14px; height: 14px;"></i>
+                    Cloud-Native Monitoring
+                </div>
+                <h1 class="hero-title">Monitor Everything. <br>Query with <span class="gradient-text">PromQL</span>.</h1>
+                <p class="hero-desc">
+                    Prometheus is the open-source systems monitoring and alerting toolkit. Dive into our interactive dashboard to explore Prometheus' architecture, learn installation steps, play with raw exposition formats, and plot time-series data dynamically.
+                </p>
+                <div class="hero-buttons">
+                    <a href="#installation" class="btn btn-primary">
+                        <i data-lucide="terminal" style="width: 18px; height: 18px;"></i>
+                        Start Installing
+                    </a>
+                    <a href="#playground" class="btn btn-secondary">
+                        <i data-lucide="play" style="width: 18px; height: 18px;"></i>
+                        Simulate Metrics
+                    </a>
+                </div>
+            </div>
+            <div class="hero-art">
+                <div class="hero-art-glow"></div>
+                <div class="hero-art-main">
+                    <!-- Giant official SVG Logo with animations -->
+                    <svg viewBox="0 0 115.333 114" xmlns="http://www.w3.org/2000/svg">
+                        <path style="fill:#e6522c;" d="M 56.667,0.667 C 25.372,0.667 0,26.036 0,57.332 c 0,31.295 25.372,56.666 56.667,56.666 31.295,0 56.666,-25.371 56.666,-56.666 0,-31.296 -25.372,-56.665 -56.666,-56.665 z m 0,106.055 c -8.904,0 -16.123,-5.948 -16.123,-13.283 H 72.79 c 0,7.334 -7.219,13.283 -16.123,13.283 z M 83.297,89.04 H 30.034 V 79.382 H 83.298 V 89.04 Z M 83.106,74.411 H 30.186 C 30.01,74.208 29.83,74.008 29.66,73.802 24.208,67.182 22.924,63.726 21.677,60.204 c -0.021,-0.116 6.611,1.355 11.314,2.413 0,0 2.42,0.56 5.958,1.205 -3.397,-3.982 -5.414,-9.044 -5.414,-14.218 0,-11.359 8.712,-21.285 5.569,-29.308 3.059,0.249 6.331,6.456 6.552,16.161 3.252,-4.494 4.613,-12.701 4.613,-17.733 0,-5.21 3.433,-11.262 6.867,-11.469 -3.061,5.045 0.793,9.37 4.219,20.099 1.285,4.03 1.121,10.812 2.113,15.113 C 63.797,33.534 65.333,20.5 71,16 c -2.5,5.667 0.37,12.758 2.333,16.167 3.167,5.5 5.087,9.667 5.087,17.548 0,5.284 -1.951,10.259 -5.242,14.148 3.742,-0.702 6.326,-1.335 6.326,-1.335 l 12.152,-2.371 c 10e-4,-10e-4 -1.765,7.261 -8.55,14.254 z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Working & Architecture Section -->
+    <section class="section" id="working">
+        <div class="container">
+            <div class="section-header">
+                <div class="badge badge-orange">Ecosystem</div>
+                <h2 class="section-title">How Prometheus Works</h2>
+                <p class="section-desc">
+                    Prometheus utilizes a pull-based model, scraping metrics at defined intervals from configured client applications or proxy exporters. Tap on the nodes in the diagram below to explore details about each component.
+                </p>
+            </div>
+
+            <div class="arch-container">
+                <!-- SVG Architecture Flow Diagram -->
+                <div class="card arch-graph-card">
+                    <svg viewBox="0 0 600 400" class="arch-svg-container" id="architecture-svg">
+                        <!-- Definitions for arrows -->
+                        <defs>
+                            <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--primary)" />
+                            </marker>
+                            <marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--text-muted)" />
+                            </marker>
+                        </defs>
+
+                        <!-- Connecting Streams -->
+                        <!-- Exporters to Server -->
+                        <path d="M 160,110 L 300,165" class="arch-link" id="link-exporters" />
+                        <path d="M 160,110 L 300,165" class="arch-link-flow" id="flow-exporters" style="display:none;" />
+                        
+                        <!-- Pushgateway to Server -->
+                        <path d="M 160,250 L 300,215" class="arch-link" id="link-pushgateway" />
+                        <path d="M 160,250 L 300,215" class="arch-link-flow" id="flow-pushgateway" style="display:none;" />
+
+                        <!-- Server to Alertmanager -->
+                        <path d="M 400,190 L 510,120" class="arch-link" id="link-alertmanager" />
+                        <path d="M 400,190 L 510,120" class="arch-link-flow" id="flow-alertmanager" style="display:none;" />
+
+                        <!-- Server to Grafana -->
+                        <path d="M 400,190 L 510,280" class="arch-link" id="link-visualization" />
+                        <path d="M 400,190 L 510,280" class="arch-link-flow" id="flow-visualization" style="display:none;" />
+
+                        <!-- NODE 1: Jobs & Exporters -->
+                        <g class="arch-node active" id="node-exporters" onclick="selectArchNode('exporters')">
+                            <rect x="30" y="60" width="130" height="85" rx="10" />
+                            <text x="95" y="85" text-anchor="middle" class="arch-node-title">Jobs / Exporters</text>
+                            <text x="95" y="105" text-anchor="middle" class="arch-node-desc">Pull Target: Node Exporter</text>
+                            <text x="95" y="120" text-anchor="middle" class="arch-node-desc">App Custom Metrics</text>
+                        </g>
+
+                        <!-- NODE 2: Pushgateway -->
+                        <g class="arch-node" id="node-pushgateway" onclick="selectArchNode('pushgateway')">
+                            <rect x="30" y="210" width="130" height="85" rx="10" />
+                            <text x="95" y="235" text-anchor="middle" class="arch-node-title">Pushgateway</text>
+                            <text x="95" y="255" text-anchor="middle" class="arch-node-desc">For Short-Lived Jobs</text>
+                            <text x="95" y="270" text-anchor="middle" class="arch-node-desc">Ephemeral Metrics Store</text>
+                        </g>
+
+                        <!-- NODE 3: Prometheus Server -->
+                        <g class="arch-node" id="node-server" onclick="selectArchNode('server')">
+                            <rect x="260" y="125" width="150" height="120" rx="15" />
+                            <!-- Mini logo inside server -->
+                            <circle cx="335" cy="165" r="16" fill="var(--primary-light)" stroke="var(--primary)" stroke-width="1" />
+                            <path d="M 335,153 C 327,153 322,158 322,165 c 0,7 5,13 13,13 c 8,0 13,-6 13,-13 z" fill="var(--primary)" transform="scale(0.55) translate(272, 117)" />
+                            <text x="335" y="200" text-anchor="middle" class="arch-node-title">Prometheus Server</text>
+                            <text x="335" y="215" text-anchor="middle" class="arch-node-desc">Retrieval, TSDB, & HTTP API</text>
+                        </g>
+
+                        <!-- NODE 4: Alertmanager -->
+                        <g class="arch-node" id="node-alertmanager" onclick="selectArchNode('alertmanager')">
+                            <rect x="470" y="70" width="110" height="80" rx="10" />
+                            <text x="525" y="95" text-anchor="middle" class="arch-node-title">Alertmanager</text>
+                            <text x="525" y="115" text-anchor="middle" class="arch-node-desc">Deduplicate & Route</text>
+                            <text x="525" y="130" text-anchor="middle" class="arch-node-desc">Email, Slack, PagerDuty</text>
+                        </g>
+
+                        <!-- NODE 5: Grafana & Visualization -->
+                        <g class="arch-node" id="node-visualization" onclick="selectArchNode('visualization')">
+                            <rect x="470" y="240" width="110" height="80" rx="10" />
+                            <text x="525" y="265" text-anchor="middle" class="arch-node-title">Visualization</text>
+                            <text x="525" y="285" text-anchor="middle" class="arch-node-desc">Grafana Dashboards</text>
+                            <text x="525" y="300" text-anchor="middle" class="arch-node-desc">Prometheus Web UI</text>
+                        </g>
+                    </svg>
+                </div>
+
+                <!-- Detail Panel -->
+                <div class="card arch-detail-card" id="arch-details">
+                    <div>
+                        <div class="badge badge-orange arch-detail-badge" id="arch-badge">Data Source</div>
+                        <h3 class="arch-detail-title" id="arch-title">
+                            <i data-lucide="database" style="width: 20px; height: 20px;"></i>
+                            Jobs & Exporters
+                        </h3>
+                        <p class="arch-detail-text" id="arch-text">
+                            Jobs and Exporters expose system and service metrics in a plain text HTTP format. Exporters are agents deployed alongside apps to translate third-party metrics (like database stats or hardware usage) to Prometheus format. 
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <h4 style="font-size: 0.9rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; letter-spacing: 0.05em;">Sample Metrics Schema</h4>
+                        <div class="arch-detail-code">
+                            <pre id="arch-code"># HELP node_cpu_seconds_total Seconds the CPU spent in each mode.
+# TYPE node_cpu_seconds_total counter
+node_cpu_seconds_total{cpu="0",mode="idle"} 439023.11</pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Installation Section -->
+    <section class="section" id="installation">
+        <div class="container">
+            <div class="section-header">
+                <div class="badge badge-orange">Deployment</div>
+                <h2 class="section-title">Install Prometheus</h2>
+                <p class="section-desc">
+                    Prometheus is compiled as a single binary and has no external dependencies. Learn how to configure and install Prometheus in your environment.
+                </p>
+            </div>
+
+            <!-- Operating System Selector Tabs -->
+            <div class="install-tabs">
+                <button class="tab-btn active" onclick="switchInstallTab('linux')">Linux / Unix</button>
+                <button class="tab-btn" onclick="switchInstallTab('macos')">macOS (Homebrew)</button>
+                <button class="tab-btn" onclick="switchInstallTab('windows')">Windows</button>
+                <button class="tab-btn" onclick="switchInstallTab('docker')">Docker</button>
+            </div>
+
+            <!-- TAB: Linux -->
+            <div class="tab-content active" id="install-linux">
+                <div class="install-grid">
+                    <div class="install-steps">
+                        <div class="step-item">
+                            <div class="step-num">1</div>
+                            <div>
+                                <h3 class="step-title">Download and Extract Binary</h3>
+                                <p class="step-text">Download the Linux binary using wget and unpack it.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">2</div>
+                            <div>
+                                <h3 class="step-title">Configure Directories and User</h3>
+                                <p class="step-text">Create a system user and set up configuration and data directories with appropriate permissions.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">3</div>
+                            <div>
+                                <h3 class="step-title">Deploy systemd Service</h3>
+                                <p class="step-text">Create a systemd unit file to manage the Prometheus process and enable auto-start on boot.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Console Box -->
+                    <div class="terminal-console">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="terminal-dot terminal-dot-red"></div>
+                                <div class="terminal-dot terminal-dot-yellow"></div>
+                                <div class="terminal-dot terminal-dot-green"></div>
+                            </div>
+                            <span class="terminal-title">install-linux.sh</span>
+                            <button class="terminal-copy-btn" onclick="copyConsoleCode('linux-cmd')">
+                                <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+                                <span class="copy-text">Copy</span>
+                            </button>
+                        </div>
+                        <div class="terminal-body" id="linux-cmd">
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-comment"># Download tarball</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>wget https://github.com/prometheus/prometheus/releases/download/v2.53.0/prometheus-2.53.0.linux-amd64.tar.gz</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>tar -xvf prometheus-2.53.0.linux-amd64.tar.gz</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-comment"># Create system user & directories</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo useradd --no-create-home --shell /bin/false prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo mkdir /etc/prometheus /var/lib/prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-comment"># Copy binaries and configs</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo cp prometheus-2.53.0.linux-amd64/prometheus /usr/local/bin/</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo cp prometheus-2.53.0.linux-amd64/promtool /usr/local/bin/</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo cp -r prometheus-2.53.0.linux-amd64/consoles /etc/prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo cp -r prometheus-2.53.0.linux-amd64/console_libraries /etc/prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo cp prometheus-2.53.0.linux-amd64/prometheus.yml /etc/prometheus/</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-comment"># Change ownership</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>sudo chown -R prometheus:prometheus /etc/prometheus /var/lib/prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-comment"># Run Prometheus Server</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>prometheus --config.file=/etc/prometheus/prometheus.yml</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: macOS -->
+            <div class="tab-content" id="install-macos">
+                <div class="install-grid">
+                    <div class="install-steps">
+                        <div class="step-item">
+                            <div class="step-num">1</div>
+                            <div>
+                                <h3 class="step-title">Install via Homebrew</h3>
+                                <p class="step-text">Run the Homebrew install command to download and set up Prometheus natively.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">2</div>
+                            <div>
+                                <h3 class="step-title">Locate Configurations</h3>
+                                <p class="step-text">Configurations are stored at <code>/opt/homebrew/etc/prometheus.yml</code> on Apple Silicon.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">3</div>
+                            <div>
+                                <h3 class="step-title">Start the Daemon</h3>
+                                <p class="step-text">Manage the service state and run it in the background using homebrew services.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Console Box -->
+                    <div class="terminal-console">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="terminal-dot terminal-dot-red"></div>
+                                <div class="terminal-dot terminal-dot-yellow"></div>
+                                <div class="terminal-dot terminal-dot-green"></div>
+                            </div>
+                            <span class="terminal-title">macos-brew.sh</span>
+                            <button class="terminal-copy-btn" onclick="copyConsoleCode('macos-cmd')">
+                                <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+                                <span class="copy-text">Copy</span>
+                            </button>
+                        </div>
+                        <div class="terminal-body" id="macos-cmd">
+                            <div class="terminal-line"><span class="terminal-prompt">%</span><span class="terminal-comment"># Install using Homebrew</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">%</span><span>brew install prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">%</span><span class="terminal-comment"># Start background daemon</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">%</span><span>brew services start prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">%</span><span class="terminal-comment"># Or run manually in foreground:</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">%</span><span>prometheus --config.file=/opt/homebrew/etc/prometheus.yml</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Windows -->
+            <div class="tab-content" id="install-windows">
+                <div class="install-grid">
+                    <div class="install-steps">
+                        <div class="step-item">
+                            <div class="step-num">1</div>
+                            <div>
+                                <h3 class="step-title">Using Package Managers</h3>
+                                <p class="step-text">Easily install with Chocolatey (<code>choco</code>) or Scoop.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">2</div>
+                            <div>
+                                <h3 class="step-title">Direct Binary Execution</h3>
+                                <p class="step-text">Download the zip package, extract it, and execute <code>prometheus.exe</code> directly inside Powershell.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">3</div>
+                            <div>
+                                <h3 class="step-title">Run in Terminal</h3>
+                                <p class="step-text">By default, Prometheus launches at <code>localhost:9090</code>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Console Box -->
+                    <div class="terminal-console">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="terminal-dot terminal-dot-red"></div>
+                                <div class="terminal-dot terminal-dot-yellow"></div>
+                                <div class="terminal-dot terminal-dot-green"></div>
+                            </div>
+                            <span class="terminal-title">windows-cmd.ps1</span>
+                            <button class="terminal-copy-btn" onclick="copyConsoleCode('windows-cmd')">
+                                <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+                                <span class="copy-text">Copy</span>
+                            </button>
+                        </div>
+                        <div class="terminal-body" id="windows-cmd">
+                            <div class="terminal-line"><span class="terminal-prompt">PS></span><span class="terminal-comment"># Install with Chocolatey:</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">PS></span><span>choco install prometheus</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">PS></span><span class="terminal-comment"># Or run extracted binary directly:</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">PS></span><span>cd C:\prometheus-folder</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">PS></span><span>.\prometheus.exe --config.file="prometheus.yml"</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: Docker -->
+            <div class="tab-content" id="install-docker">
+                <div class="install-grid">
+                    <div class="install-steps">
+                        <div class="step-item">
+                            <div class="step-num">1</div>
+                            <div>
+                                <h3 class="step-title">Define prometheus.yml</h3>
+                                <p class="step-text">Create a local config file mapping scraper targets to localhost.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">2</div>
+                            <div>
+                                <h3 class="step-title">Run Container</h3>
+                                <p class="step-text">Bind port 9090 and mount the local configuration file to the container path.</p>
+                            </div>
+                        </div>
+                        <div class="step-item">
+                            <div class="step-num">3</div>
+                            <div>
+                                <h3 class="step-title">Access and Verify</h3>
+                                <p class="step-text">Visit container dashboard, query raw container statistics, or view targets.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Console Box -->
+                    <div class="terminal-console">
+                        <div class="terminal-header">
+                            <div class="terminal-dots">
+                                <div class="terminal-dot terminal-dot-red"></div>
+                                <div class="terminal-dot terminal-dot-yellow"></div>
+                                <div class="terminal-dot terminal-dot-green"></div>
+                            </div>
+                            <span class="terminal-title">docker-compose.yml</span>
+                            <button class="terminal-copy-btn" onclick="copyConsoleCode('docker-cmd')">
+                                <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+                                <span class="copy-text">Copy</span>
+                            </button>
+                        </div>
+                        <div class="terminal-body" id="docker-cmd">
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span class="terminal-comment"># Pull & Run via CLI:</span></div>
+                            <div class="terminal-line"><span class="terminal-prompt">$</span><span>docker run -d --name prometheus -p 9090:9090 -v /path/to/prometheus.yml:/etc/prometheus/prometheus.yml prom/prometheus</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section & Interactive Simulator -->
+    <section class="section" id="metrics">
+        <div class="container">
+            <div class="section-header">
+                <div class="badge badge-orange">Instrumentation</div>
+                <h2 class="section-title">The Four Metric Types</h2>
+                <p class="section-desc">
+                    Prometheus classifies client metrics into four distinct types. Click the action deck below to simulate app behavior and watch the raw output generate in real-time.
+                </p>
+            </div>
+
+            <!-- Type Cards -->
+            <div class="metrics-grid">
+                <!-- Counter -->
+                <div class="card metric-type-card">
+                    <div class="metric-type-icon"><i data-lucide="trending-up"></i></div>
+                    <h3 class="metric-type-title">Counter</h3>
+                    <p class="metric-type-desc">A cumulative metric that only goes up or resets to 0 on restart. Ideal for counting requests, errors, or completed tasks.</p>
+                    <div class="metric-type-code">http_requests_total</div>
+                </div>
+                <!-- Gauge -->
+                <div class="card metric-type-card">
+                    <div class="metric-type-icon"><i data-lucide="sliders"></i></div>
+                    <h3 class="metric-type-title">Gauge</h3>
+                    <p class="metric-type-desc">Represents a single numerical value that can go up and down. Perfect for CPU usage, memory, or queue sizes.</p>
+                    <div class="metric-type-code">node_memory_usage_bytes</div>
+                </div>
+                <!-- Histogram -->
+                <div class="card metric-type-card">
+                    <div class="metric-type-icon"><i data-lucide="bar-chart-3"></i></div>
+                    <h3 class="metric-type-title">Histogram</h3>
+                    <p class="metric-type-desc">Samples observations (e.g. durations) and counts them in configurable buckets. Provides sum and count metrics.</p>
+                    <div class="metric-type-code">http_request_duration_seconds_bucket</div>
+                </div>
+                <!-- Summary -->
+                <div class="card metric-type-card">
+                    <div class="metric-type-icon"><i data-lucide="line-chart"></i></div>
+                    <h3 class="metric-type-title">Summary</h3>
+                    <p class="metric-type-desc">Similar to a histogram, it calculates configurable quantiles (like 99th percentile) over a sliding time window.</p>
+                    <div class="metric-type-code">http_request_duration_seconds{quantile="0.99"}</div>
+                </div>
+            </div>
+
+            <!-- Simulator Playground -->
+            <h3 style="font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 2rem;">Real-time Exporter Simulator</h3>
+            <div class="simulator-section">
+                <!-- Controls -->
+                <div class="control-deck">
+                    <div class="control-card">
+                        <h4 class="control-card-title">
+                            <i data-lucide="plus-circle" style="color: var(--success); width: 18px; height: 18px;"></i>
+                            Simulate Counters (Cumulative Events)
+                        </h4>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">Clicking increments api request counts and triggers specific status code labels.</p>
+                        <div class="control-actions">
+                            <button class="sim-btn" onclick="incrementCounter('GET', '200')">
+                                <i data-lucide="check" style="width: 14px; height: 14px; color: var(--success);"></i>
+                                API Request (200 OK)
+                            </button>
+                            <button class="sim-btn" onclick="incrementCounter('POST', '500')">
+                                <i data-lucide="x" style="width: 14px; height: 14px; color: var(--danger);"></i>
+                                DB Error (500 Fail)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <h4 class="control-card-title">
+                            <i data-lucide="repeat" style="color: var(--warning); width: 18px; height: 18px;"></i>
+                            Simulate Gauges (Fluctuating Values)
+                        </h4>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">Set memory sizes dynamically. Memory metrics will go up and down.</p>
+                        <div class="control-actions">
+                            <button class="sim-btn" onclick="adjustGauge(15)">
+                                <i data-lucide="arrow-up" style="width: 14px; height: 14px; color: var(--danger);"></i>
+                                Load Heavy File (+15MB)
+                            </button>
+                            <button class="sim-btn" onclick="adjustGauge(-10)">
+                                <i data-lucide="arrow-down" style="width: 14px; height: 14px; color: var(--success);"></i>
+                                GC Clean (-10MB)
+                            </button>
+                        </div>
+                        <div class="sim-gauge-container">
+                            <div class="sim-gauge-label">
+                                <span>Memory Heap Gauge</span>
+                                <span id="gauge-val-display">45 MB</span>
+                            </div>
+                            <div class="sim-gauge-bar-outer">
+                                <div class="sim-gauge-bar-inner" id="gauge-bar-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-card">
+                        <h4 class="control-card-title">
+                            <i data-lucide="hourglass" style="color: var(--info); width: 18px; height: 18px;"></i>
+                            Simulate Histogram & Summary (Latencies)
+                        </h4>
+                        <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 1rem;">Log response times. Slow queries populate higher duration buckets.</p>
+                        <div class="control-actions">
+                            <button class="sim-btn" onclick="recordLatency(0.04)">
+                                <i data-lucide="zap" style="width: 14px; height: 14px; color: var(--warning);"></i>
+                                Fast Query (0.04s)
+                            </button>
+                            <button class="sim-btn" onclick="recordLatency(1.18)">
+                                <i data-lucide="clock" style="width: 14px; height: 14px; color: var(--info);"></i>
+                                Slow Query (1.18s)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Exporter Code Output -->
+                <div class="metrics-exporter-card card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h4 style="font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                            <i data-lucide="server" style="color: var(--primary);"></i>
+                            Exporter Endpoint: <code style="color: var(--primary);">/metrics</code>
+                        </h4>
+                        <div class="badge badge-orange" style="font-size: 0.65rem;">HTTP 200 Plaintext</div>
+                    </div>
+                    
+                    <div class="exporter-terminal" id="exporter-terminal-output">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PromQL Chart / Live Playground Section -->
+    <section class="section" id="playground">
+        <div class="container chart-section">
+            <div class="chart-header-row">
+                <div>
+                    <div class="badge badge-orange">Analytics</div>
+                    <h2 style="font-size: 2.2rem; font-weight: 700; margin-top: 0.5rem; margin-bottom: 0.25rem;">PromQL Console & Chart</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">Select a query to pull mock time-series metrics from our live database simulation.</p>
+                </div>
+                
+                <div class="chart-controls">
+                    <label for="query-select" style="font-weight: 600; font-size: 0.9rem; color: var(--text-secondary);">Query:</label>
+                    <select id="query-select" class="query-select" onchange="runPromQLQuery()">
+                        <option value="http_requests_total">http_requests_total (Counter Rate)</option>
+                        <option value="node_memory_usage_bytes">node_memory_usage_bytes (Gauge Value)</option>
+                        <option value="db_query_duration_seconds">db_query_duration_seconds (95% Latency)</option>
+                    </select>
+                    
+                    <button class="btn btn-primary" style="padding: 0.5rem 1.25rem; font-size: 0.85rem;" onclick="runPromQLQuery()">
+                        <i data-lucide="refresh-cw" style="width: 14px; height: 14px;"></i> Run
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chart panel -->
+            <div class="chart-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; font-family: var(--font-code); font-size: 0.85rem; color: var(--text-secondary);">
+                    <div>Element: <span id="chart-query-display" style="color: var(--primary); font-weight: 600;">http_requests_total</span></div>
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="display:inline-block; width: 8px; height: 8px; border-radius:50%; background-color: var(--success); animation: pulse-glow 2s infinite;"></span>
+                        Live Stream Active
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <svg class="chart-svg" id="chart-svg">
+                        <defs>
+                            <!-- Line Gradient -->
+                            <linearGradient id="chart-gradient" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%" stop-color="var(--primary)" stop-opacity="0.3"></stop>
+                                <stop offset="100%" stop-color="var(--primary)" stop-opacity="0.0"></stop>
+                            </linearGradient>
+                        </defs>
+                        <!-- Grid Lines are generated in JS -->
+                        <g id="chart-grid"></g>
+                        <!-- Chart path -->
+                        <path class="chart-area" id="chart-area-path" d=""></path>
+                        <path class="chart-line" id="chart-line-path" d=""></path>
+                        <!-- Hover tracker overlay -->
+                        <g id="chart-dots"></g>
+                        <!-- X & Y Axes labels -->
+                        <g id="chart-axes"></g>
+                    </svg>
+                    
+                    <!-- Chart Tooltip -->
+                    <div class="chart-tooltip" id="chart-tooltip"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <a href="#" class="logo footer-logo">
+                        <svg viewBox="0 0 115.333 114" xmlns="http://www.w3.org/2000/svg">
+                            <path style="fill:#e6522c;" d="M 56.667,0.667 C 25.372,0.667 0,26.036 0,57.332 c 0,31.295 25.372,56.666 56.667,56.666 31.295,0 56.666,-25.371 56.666,-56.666 0,-31.296 -25.372,-56.665 -56.666,-56.665 z m 0,106.055 c -8.904,0 -16.123,-5.948 -16.123,-13.283 H 72.79 c 0,7.334 -7.219,13.283 -16.123,13.283 z M 83.297,89.04 H 30.034 V 79.382 H 83.298 V 89.04 Z M 83.106,74.411 H 30.186 C 30.01,74.208 29.83,74.008 29.66,73.802 24.208,67.182 22.924,63.726 21.677,60.204 c -0.021,-0.116 6.611,1.355 11.314,2.413 0,0 2.42,0.56 5.958,1.205 -3.397,-3.982 -5.414,-9.044 -5.414,-14.218 0,-11.359 8.712,-21.285 5.569,-29.308 3.059,0.249 6.331,6.456 6.552,16.161 3.252,-4.494 4.613,-12.701 4.613,-17.733 0,-5.21 3.433,-11.262 6.867,-11.469 -3.061,5.045 0.793,9.37 4.219,20.099 1.285,4.03 1.121,10.812 2.113,15.113 C 63.797,33.534 65.333,20.5 71,16 c -2.5,5.667 0.37,12.758 2.333,16.167 3.167,5.5 5.087,9.667 5.087,17.548 0,5.284 -1.951,10.259 -5.242,14.148 3.742,-0.702 6.326,-1.335 6.326,-1.335 l 12.152,-2.371 c 10e-4,-10e-4 -1.765,7.261 -8.55,14.254 z" />
+                        </svg>
+                        <span>PROMETHEUS<span class="logo-text-sub">NAVIGATOR</span></span>
+                    </a>
+                    <p class="footer-desc">
+                        A modern interactive visual guide to understanding the Prometheus monitoring stack, metric formats, systems engineering, and time-series query structures.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="footer-title">Components</h4>
+                    <ul class="footer-links">
+                        <li><a href="#working" class="footer-link">Architecture Graph</a></li>
+                        <li><a href="#installation" class="footer-link">OS Installations</a></li>
+                        <li><a href="#metrics" class="footer-link">Exposition Format</a></li>
+                        <li><a href="#playground" class="footer-link">PromQL Simulator</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-title">Official Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://prometheus.io/" target="_blank" rel="noopener" class="footer-link">Official Website</a></li>
+                        <li><a href="https://prometheus.io/docs/introduction/overview/" target="_blank" rel="noopener" class="footer-link">Documentation</a></li>
+                        <li><a href="https://github.com/prometheus/prometheus" target="_blank" rel="noopener" class="footer-link">GitHub Repository</a></li>
+                        <li><a href="https://prometheus.io/community/" target="_blank" rel="noopener" class="footer-link">Prometheus Community</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Prometheus Navigator. Built for Educational Guidance.</p>
+                <p>Released under the Apache 2.0 License.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripting Section -->
+    <script>
+        // Init Lucide Icons
+        lucide.createIcons();
+
+        // ----------------- Theme Toggle Logic -----------------
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+
+        // Load saved theme or default to dark
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        htmlElement.setAttribute('data-theme', savedTheme);
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Mobile Menu Toggle
+        const mobileToggleBtn = document.getElementById('mobile-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileToggleBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when nav link clicked
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // ----------------- Interactive Architecture Logic -----------------
+        const archNodes = {
+            exporters: {
+                badge: 'Data Source (Pull)',
+                title: 'Jobs & Exporters',
+                text: 'Jobs and Exporters expose system, container, or app metrics in a plain text HTTP format. Exporters are agents deployed alongside apps to translate third-party metrics (like database stats or hardware usage) to Prometheus format. Node Exporter is the standard Linux host monitoring agent.',
+                code: '# HELP node_cpu_seconds_total Seconds the CPU spent in each mode.\n# TYPE node_cpu_seconds_total counter\nnode_cpu_seconds_total{cpu="0",mode="idle"} 439023.11\n\n# HELP node_memory_Active_bytes Memory actively in use.\n# TYPE node_memory_Active_bytes gauge\nnode_memory_Active_bytes 3.4218e+09'
+            },
+            pushgateway: {
+                badge: 'Intermediary Store (Push)',
+                title: 'Pushgateway',
+                text: 'The Prometheus Pushgateway allows short-lived, ephemeral, or batch service jobs to push their metrics to an intermediary. Because these jobs may not exist long enough to be scraped directly, they push metrics to the Gateway, which Prometheus then pulls from periodically.',
+                code: '# HELP backup_job_last_success_timestamp Timestamp of last success.\n# TYPE backup_job_last_success_timestamp gauge\nbackup_job_last_success_timestamp 1717869600\n\n# HELP backup_duration_seconds Duration in seconds.\n# TYPE backup_duration_seconds summary\nbackup_duration_seconds{quantile="0.9"} 142.3'
+            },
+            server: {
+                badge: 'Core Processing (Pull)',
+                title: 'Prometheus Server',
+                text: 'The Prometheus Server is the core engine. It scrapes (pulls) metrics from registered targets, saves time-series data locally in a fast custom Time-Series Database (TSDB), evaluates configured Alerting Rules, and exposes a PromQL interface via its HTTP API.',
+                code: 'scrape_configs:\n  - job_name: "prometheus"\n    scrape_interval: 15s\n    static_configs:\n      - targets: ["localhost:9090"]\n\n  - job_name: "node"\n    static_configs:\n      - targets: ["localhost:9100"]'
+            },
+            alertmanager: {
+                badge: 'Alert Management (Push)',
+                title: 'Alertmanager',
+                text: 'The Alertmanager handles alerts sent by Prometheus server rules. It deduplicates, groups, and routes them to integration receivers like Slack, email, PagerDuty, or custom Webhooks. It also manages silences and inhibitions of alerts.',
+                code: 'route:\n  group_by: ["alertname"]\n  group_wait: 30s\n  receiver: "slack-notifications"\n\nreceivers:\n- name: "slack-notifications"\n  slack_configs:\n  - channel: "#monitoring-alerts"\n    api_url: "https://hooks.slack.com/..."'
+            },
+            visualization: {
+                badge: 'User Interface (Pull)',
+                title: 'Visualization & API',
+                text: 'Prometheus includes a basic built-in web browser UI for debugging PromQL queries and viewing targets. For production, Grafana is the industry-standard visualization tool, query mapping Prometheus as a data source to build gorgeous dynamic dashboards.',
+                code: 'GET /api/v1/query?query=up HTTP/1.1\nHost: localhost:9090\nAccept: application/json\n\n# Query Response contains time-series values\n# mapped to timestamps in JSON structure.'
+            }
+        };
+
+        function selectArchNode(nodeKey) {
+            // Remove active classes
+            document.querySelectorAll('.arch-node').forEach(node => {
+                node.classList.remove('active');
+            });
+            // Hide all flows
+            document.querySelectorAll('.arch-link-flow').forEach(flow => {
+                flow.style.display = 'none';
+            });
+
+            // Set active class
+            document.getElementById(`node-${nodeKey}`).classList.add('active');
+
+            // Show flow animation
+            const flowPath = document.getElementById(`flow-${nodeKey}`);
+            if (flowPath) {
+                flowPath.style.display = 'block';
+            } else if (nodeKey === 'server') {
+                // Server activates all connections
+                document.getElementById('flow-exporters').style.display = 'block';
+                document.getElementById('flow-pushgateway').style.display = 'block';
+            }
+
+            // Update text elements
+            const data = archNodes[nodeKey];
+            document.getElementById('arch-badge').textContent = data.badge;
+            document.getElementById('arch-title').innerHTML = `
+                <i data-lucide="${nodeKey === 'server' ? 'server' : nodeKey === 'exporters' ? 'database' : nodeKey === 'pushgateway' ? 'repeat' : nodeKey === 'alertmanager' ? 'bell' : 'line-chart'}" style="width: 20px; height: 20px;"></i>
+                ${data.title}
+            `;
+            document.getElementById('arch-text').textContent = data.text;
+            document.getElementById('arch-code').textContent = data.code;
+
+            // Re-draw icons inside updated title
+            lucide.createIcons();
+        }
+
+        // Set default flow visible on page load
+        document.getElementById('flow-exporters').style.display = 'block';
+
+
+        // ----------------- Installation Tabs Logic -----------------
+        function switchInstallTab(tabKey) {
+            // Toggle active classes on tab buttons
+            document.querySelectorAll('.install-tabs .tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Toggle active class on contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Set clicked active
+            event.currentTarget.classList.add('active');
+            document.getElementById(`install-${tabKey}`).classList.add('active');
+        }
+
+        // Copy Terminal Code to Clipboard
+        function copyConsoleCode(elementId) {
+            const container = document.getElementById(elementId);
+            const copyBtn = event.currentTarget;
+            const copyTextSpan = copyBtn.querySelector('.copy-text');
+            const copyIcon = copyBtn.querySelector('i');
+            
+            // Extract text contents without prompt characters
+            let textToCopy = "";
+            const lines = container.querySelectorAll('.terminal-line');
+            lines.forEach((line, index) => {
+                const command = line.querySelector('span:not(.terminal-prompt):not(.terminal-comment)');
+                if (command) {
+                    textToCopy += command.textContent + "\n";
+                }
+            });
+
+            navigator.clipboard.writeText(textToCopy.trim()).then(() => {
+                copyTextSpan.textContent = "Copied!";
+                copyBtn.style.borderColor = "var(--success)";
+                copyBtn.style.color = "var(--success)";
+                copyIcon.setAttribute('data-lucide', 'check');
+                lucide.createIcons();
+
+                setTimeout(() => {
+                    copyTextSpan.textContent = "Copy";
+                    copyBtn.style.borderColor = "var(--border-color)";
+                    copyBtn.style.color = "var(--text-secondary)";
+                    copyIcon.setAttribute('data-lucide', 'copy');
+                    lucide.createIcons();
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+            });
+        }
+
+
+        // ----------------- Exporter Simulator Logic -----------------
+        // In-memory simulation Database state
+        const simMetrics = {
+            http_requests_total: {
+                "GET": { "200": 124 },
+                "POST": { "500": 3 }
+            },
+            node_memory_usage_bytes: 47185920, // 45 MB baseline
+            db_query_duration_seconds: {
+                sum: 12.43,
+                count: 85,
+                buckets: {
+                    "0.05": 62,
+                    "0.1": 74,
+                    "0.5": 81,
+                    "1.0": 83,
+                    "2.0": 85,
+                    "+Inf": 85
+                }
+            }
+        };
+
+        function renderExporterOutput(flashTargetKey) {
+            const container = document.getElementById('exporter-terminal-output');
+            
+            let html = "";
+            
+            // HTTP Request Counter
+            const countGET = simMetrics.http_requests_total["GET"]["200"];
+            const countPOST = simMetrics.http_requests_total["POST"]["500"];
+            const flashCounter = flashTargetKey === 'counter';
+            
+            html += `<div class="${flashCounter ? 'flash-line' : ''}">`;
+            html += `<span class="terminal-comment"># HELP http_requests_total Cumulative HTTP requests processed</span>\n`;
+            html += `<span class="terminal-comment"># TYPE http_requests_total counter</span>\n`;
+            html += `http_requests_total{method="GET",handler="/users",status="200"} <span style="color:var(--code-number); font-weight:600;">${countGET}</span>\n`;
+            html += `http_requests_total{method="POST",handler="/checkout",status="500"} <span style="color:var(--code-number); font-weight:600;">${countPOST}</span>\n`;
+            html += `</div>\n`;
+
+            // Memory Usage Gauge
+            const memoryVal = simMetrics.node_memory_usage_bytes;
+            const flashGauge = flashTargetKey === 'gauge';
+            
+            html += `<div class="${flashGauge ? 'flash-line' : ''}">`;
+            html += `<span class="terminal-comment"># HELP node_memory_usage_bytes Current memory usage in bytes</span>\n`;
+            html += `<span class="terminal-comment"># TYPE node_memory_usage_bytes gauge</span>\n`;
+            html += `node_memory_usage_bytes <span style="color:var(--code-number); font-weight:600;">${memoryVal}</span>\n`;
+            html += `</div>\n`;
+
+            // DB Latency Histogram
+            const dbSum = simMetrics.db_query_duration_seconds.sum.toFixed(3);
+            const dbCount = simMetrics.db_query_duration_seconds.count;
+            const dbBuckets = simMetrics.db_query_duration_seconds.buckets;
+            const flashHistogram = flashTargetKey === 'histogram';
+
+            html += `<div class="${flashHistogram ? 'flash-line' : ''}">`;
+            html += `<span class="terminal-comment"># HELP db_query_duration_seconds Response time of database queries in seconds</span>\n`;
+            html += `<span class="terminal-comment"># TYPE db_query_duration_seconds histogram</span>\n`;
+            for (const [limit, count] of Object.entries(dbBuckets)) {
+                html += `db_query_duration_seconds_bucket{le="${limit}"} <span style="color:var(--code-number);">${count}</span>\n`;
+            }
+            html += `db_query_duration_seconds_sum <span style="color:var(--code-number);">${dbSum}</span>\n`;
+            html += `db_query_duration_seconds_count <span style="color:var(--code-number);">${dbCount}</span>\n`;
+            html += `</div>`;
+
+            container.innerHTML = html;
+        }
+
+        // Action controllers
+        function incrementCounter(method, status) {
+            simMetrics.http_requests_total[method][status]++;
+            renderExporterOutput('counter');
+            
+            // If the active chart is showing http_requests_total, push data point
+            if (activeQuery === 'http_requests_total') {
+                pushLiveChartData(simMetrics.http_requests_total["GET"]["200"] + simMetrics.http_requests_total["POST"]["500"]);
+            }
+        }
+
+        function adjustGauge(mbDelta) {
+            const bytesDelta = mbDelta * 1024 * 1024;
+            const newMem = simMetrics.node_memory_usage_bytes + bytesDelta;
+            
+            // Limit range between 10MB and 100MB
+            if (newMem >= 10*1024*1024 && newMem <= 100*1024*1024) {
+                simMetrics.node_memory_usage_bytes = newMem;
+                renderExporterOutput('gauge');
+                
+                // Update UI Gauge visual components
+                const mbValue = Math.round(newMem / (1024*1024));
+                document.getElementById('gauge-val-display').textContent = `${mbValue} MB`;
+                document.getElementById('gauge-bar-fill').style.width = `${mbValue}%`;
+                
+                if (activeQuery === 'node_memory_usage_bytes') {
+                    pushLiveChartData(mbValue);
+                }
+            }
+        }
+
+        function recordLatency(seconds) {
+            simMetrics.db_query_duration_seconds.count++;
+            simMetrics.db_query_duration_seconds.sum += seconds;
+            
+            // Increment all applicable buckets
+            for (const limit of Object.keys(simMetrics.db_query_duration_seconds.buckets)) {
+                if (limit === "+Inf" || seconds <= parseFloat(limit)) {
+                    simMetrics.db_query_duration_seconds.buckets[limit]++;
+                }
+            }
+            renderExporterOutput('histogram');
+
+            if (activeQuery === 'db_query_duration_seconds') {
+                // 95% latency calculation simulation
+                const mockP95 = seconds * 0.95 + 0.12 * Math.random();
+                pushLiveChartData(parseFloat(mockP95.toFixed(2)));
+            }
+        }
+
+        // Initialize simulator output
+        renderExporterOutput();
+
+
+        // ----------------- PromQL Dynamic SVG Charting Engine -----------------
+        const chartData = {
+            http_requests_total: [110, 112, 115, 118, 120, 122, 125, 127, 127, 127],
+            node_memory_usage_bytes: [45, 48, 42, 55, 60, 50, 48, 45, 52, 45],
+            db_query_duration_seconds: [0.12, 0.15, 0.08, 0.44, 0.82, 0.23, 0.09, 0.14, 0.76, 0.08]
+        };
+        
+        let activeQuery = 'http_requests_total';
+
+        function runPromQLQuery() {
+            const selectEl = document.getElementById('query-select');
+            activeQuery = selectEl.value;
+            
+            // Update UI Labels
+            const queryDisplayMap = {
+                http_requests_total: 'rate(http_requests_total[5m])',
+                node_memory_usage_bytes: 'node_memory_usage_bytes',
+                db_query_duration_seconds: 'histogram_quantile(0.95, rate(db_query_duration_seconds_bucket[5m]))'
+            };
+            document.getElementById('chart-query-display').textContent = queryDisplayMap[activeQuery];
+
+            renderChart();
+        }
+
+        function pushLiveChartData(value) {
+            chartData[activeQuery].shift();
+            chartData[activeQuery].push(value);
+            renderChart();
+        }
+
+        function renderChart() {
+            const svg = document.getElementById('chart-svg');
+            const gridGroup = document.getElementById('chart-grid');
+            const linePath = document.getElementById('chart-line-path');
+            const areaPath = document.getElementById('chart-area-path');
+            const dotsGroup = document.getElementById('chart-dots');
+            const axesGroup = document.getElementById('chart-axes');
+
+            const width = svg.clientWidth || 600;
+            const height = 300;
+            const padding = { top: 30, right: 30, bottom: 40, left: 50 };
+
+            const data = chartData[activeQuery];
+            const maxVal = Math.max(...data) * 1.15; // Give 15% top padding
+            const minVal = Math.min(...data) * 0.85 > 0 ? Math.min(...data) * 0.85 : 0;
+
+            const mapX = (index) => padding.left + (index / (data.length - 1)) * (width - padding.left - padding.right);
+            const mapY = (val) => {
+                const range = maxVal - minVal || 1;
+                return height - padding.bottom - ((val - minVal) / range) * (height - padding.top - padding.bottom);
+            };
+
+            // 1. Render Grid Lines
+            let gridHtml = "";
+            const gridLinesCount = 5;
+            for (let i = 0; i < gridLinesCount; i++) {
+                const yVal = minVal + (i / (gridLinesCount - 1)) * (maxVal - minVal);
+                const yPos = mapY(yVal);
+                gridHtml += `<line class="chart-grid-line" x1="${padding.left}" y1="${yPos}" x2="${width - padding.right}" y2="${yPos}" />`;
+            }
+            gridGroup.innerHTML = gridHtml;
+
+            // 2. Build Bezier Curve / Line Path
+            let pathData = "";
+            let areaData = "";
+            
+            if (data.length > 0) {
+                pathData = `M ${mapX(0)} ${mapY(data[0])}`;
+                
+                // Build a nice bezier curve through nodes
+                for (let i = 1; i < data.length; i++) {
+                    const x = mapX(i);
+                    const y = mapY(data[i]);
+                    const prevX = mapX(i - 1);
+                    const prevY = mapY(data[i - 1]);
+                    const cpX1 = prevX + (x - prevX) / 2;
+                    const cpY1 = prevY;
+                    const cpX2 = prevX + (x - prevX) / 2;
+                    const cpY2 = y;
+                    
+                    pathData += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${x} ${y}`;
+                }
+                
+                // Construct shading area path
+                areaData = pathData + ` L ${mapX(data.length - 1)} ${height - padding.bottom} L ${mapX(0)} ${height - padding.bottom} Z`;
+            }
+
+            linePath.setAttribute('d', pathData);
+            areaPath.setAttribute('d', areaData);
+
+            // 3. Render Node Dots and Attach Tooltip Events
+            let dotsHtml = "";
+            data.forEach((val, i) => {
+                const cx = mapX(i);
+                const cy = mapY(i === data.length - 1 ? val : val); // Handle precision
+                
+                dotsHtml += `<circle class="chart-dot" cx="${cx}" cy="${mapY(val)}" r="4" 
+                    onmouseover="showChartTooltip(${cx}, ${mapY(val)}, '${val}', ${i})"
+                    onmouseout="hideChartTooltip()" />`;
+            });
+            dotsGroup.innerHTML = dotsHtml;
+
+            // 4. Render Axes labels
+            const unitMap = {
+                http_requests_total: 'req/s',
+                node_memory_usage_bytes: 'MB',
+                db_query_duration_seconds: 's'
+            };
+            
+            let axesHtml = "";
+            // Y-Axis Max & Min Labels
+            axesHtml += `<text class="chart-axis-text" x="${padding.left - 10}" y="${padding.top + 4}" text-anchor="end">${maxVal.toFixed(1)} ${unitMap[activeQuery]}</text>`;
+            axesHtml += `<text class="chart-axis-text" x="${padding.left - 10}" y="${height - padding.bottom + 4}" text-anchor="end">${minVal.toFixed(1)} ${unitMap[activeQuery]}</text>`;
+            
+            // X-Axis time series tags (Mocking minutes elapsed)
+            for (let i = 0; i < data.length; i += 2) {
+                const minAgo = (data.length - 1 - i) * 15;
+                axesHtml += `<text class="chart-axis-text" x="${mapX(i)}" y="${height - padding.bottom + 20}" text-anchor="middle">-${minAgo}s</text>`;
+            }
+            axesGroup.innerHTML = axesHtml;
+        }
+
+        // Tooltip Functions
+        const chartTooltip = document.getElementById('chart-tooltip');
+        
+        function showChartTooltip(x, y, value, index) {
+            chartTooltip.style.opacity = 1;
+            chartTooltip.style.transform = `translate(${x - 40}px, ${y - 45}px)`;
+            
+            const unitMap = {
+                http_requests_total: 'requests/sec',
+                node_memory_usage_bytes: 'MB Usage',
+                db_query_duration_seconds: 'seconds latency'
+            };
+
+            chartTooltip.innerHTML = `
+                <div style="font-weight:600; color:var(--primary);">${value} ${unitMap[activeQuery]}</div>
+                <div style="color:var(--text-muted); font-size:10px;">${(activeQuery === 'node_memory_usage_bytes' ? 'Usage at ' : 'Rate at')} -${(10 - 1 - index)*15}s</div>
+            `;
+        }
+
+        function hideChartTooltip() {
+            chartTooltip.style.opacity = 0;
+        }
+
+        // Render chart on initial load
+        renderChart();
+
+        // Recalculate SVG positions on window resize
+        window.addEventListener('resize', renderChart);
+
+        // Auto random updates (simulate active targets pushing data over time)
+        setInterval(() => {
+            // Counter fluctuations
+            if (Math.random() > 0.4) {
+                simMetrics.http_requests_total["GET"]["200"] += Math.floor(Math.random() * 4);
+                if (Math.random() > 0.8) {
+                    simMetrics.http_requests_total["POST"]["500"] += 1;
+                }
+                renderExporterOutput();
+            }
+
+            // Push a metric value onto the chart path to simulate timeline moving
+            if (activeQuery === 'http_requests_total') {
+                const totalReqs = simMetrics.http_requests_total["GET"]["200"] + simMetrics.http_requests_total["POST"]["500"];
+                pushLiveChartData(totalReqs);
+            } else if (activeQuery === 'node_memory_usage_bytes') {
+                // Random drift memory
+                const mbValue = Math.round(simMetrics.node_memory_usage_bytes / (1024*1024));
+                pushLiveChartData(mbValue);
+            } else if (activeQuery === 'db_query_duration_seconds') {
+                // Latency drift
+                const avgLatency = simMetrics.db_query_duration_seconds.sum / simMetrics.db_query_duration_seconds.count;
+                const simulatedVal = parseFloat((avgLatency + (Math.random() * 0.1 - 0.05)).toFixed(2));
+                pushLiveChartData(simulatedVal > 0 ? simulatedVal : 0.05);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>
