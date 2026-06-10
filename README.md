@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="banner.png" alt="Prometheus Navigator Banner" height="200" style="object-fit: cover; width: 100%;" />
+  <img src="banner.png" alt="Prometheus Navigator Banner" width="100%" height="200" style="object-fit: cover; width: 100%;" />
 
 <h1 align="center">🔥 Prometheus Navigator</h1>
 
