@@ -1,0 +1,33 @@
+# ───────────────────────────────────────────────
+# Exclude everything by default, then whitelist
+# ───────────────────────────────────────────────
+**
+
+# ── Whitelist only what belongs in the image ──
+!index.html
+!nginx.conf
+
+# Keep the top-level directory itself (required)
+!/
+
+# ───────────────────────────────────────────────
+# Explicit exclusions (safety net)
+# ───────────────────────────────────────────────
+.git
+.github
+.gitignore
+.dockerignore
+Dockerfile
+docker-compose*.yml
+*.md
+*.log
+node_modules
+.env
+.env.*
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+tmp/
+temp/
+logs/
